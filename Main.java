@@ -1,103 +1,81 @@
 import javafx.application.Application; 
-import javafx.collections.FXCollections; 
-import javafx.collections.ObservableList; 
-import javafx.scene.Group; 
-import javafx.geometry.Insets; 
-import javafx.geometry.Pos; 
-import javafx.scene.input.MouseEvent; 
-import javafx.event.EventHandler;
-import javafx.scene.Scene; 
-import javafx.scene.control.Button; 
-import javafx.scene.control.CheckBox; 
-import javafx.scene.control.ChoiceBox; 
-import javafx.scene.control.DatePicker; 
-import javafx.scene.control.ListView; 
-import javafx.scene.control.RadioButton; 
-import javafx.scene.layout.GridPane; 
-import javafx.scene.text.Text; 
-import javafx.scene.control.TextField; 
-import javafx.scene.control.ToggleGroup;  
-import javafx.scene.control.ToggleButton; 
-import javafx.stage.Stage; 
-import javafx.scene.text.Font; 
-import javafx.scene.text.FontPosture;
-import javafx.scene.text.FontWeight; 
-import javafx.scene.text.Text; 
-import javafx.scene.control.TextField; 
-import javafx.scene.shape.Rectangle; 
-import javafx.scene.paint.Color;      
+import javafx.collections.*;  
+import javafx.stage.*; 
+import javafx.scene.*;
+import javafx.scene.control.*;
+import javafx.scene.layout.*; 
+import javafx.scene.input.*; 
+import javafx.scene.text.*;  
+import javafx.geometry.*; 
+import javafx.event.*;     
 
 public class Main extends Application { 
-int i=200;
-   public void start(Stage stage) {
+	double x=0,y=0;
+	public void start(Stage stage) {
 
-	  	 //Creating a Grid Pane 
-		GridPane gridPane = new GridPane();    
-      
-      //Setting size for the pane  
-      // gridPane.setMinSize(400, 200); 
-       
-      //Setting the padding  
-      gridPane.setPadding(new Insets(10, 10, 10, 10)); 
-      
-      //Setting the vertical and horizontal gaps between the columns 
-      gridPane.setVgap(5); 
-      gridPane.setHgap(5);       
-      
-      //Setting the Grid alignment 
-      gridPane.setAlignment(Pos.TOP_LEFT); 
+	GridPane operatorGrid = new GridPane();
+	GridPane numberGrid = new GridPane();   
 
-    Text equation = new Text("Equation:"); 
-	Text polynomial = new Text("Polynomial"); 
+	Text variable_txt = new Text("Variable");
+	Text operator_txt = new Text("Operator");
+	Text number_txt = new Text("Number");
 	Text text = new Text(); 
-	
 
-	text.setFont(Font.font("bahnschrift", FontWeight.BOLD, FontPosture.REGULAR, 20));
-	equation.setFont(Font.font("bahnschrift", FontWeight.BOLD, FontPosture.REGULAR, 20));
-	polynomial.setFont(Font.font("bahnscrift", FontWeight.BOLD, FontPosture.REGULAR, 20));
-
-	TextField powerX = new TextField();
-	TextField powerY = new TextField();
-
-	
-
-	Button x= new Button("x^"); 
-	Button y= new Button("y^");
+	Button x_btn= new Button("x"); 
 	Button plus = new Button("+");
 	Button minus = new Button("-");
-	Button sin= new Button("sin");
-	Button bracketopen= new Button("(");
-	Button bracketclose= new Button(")");   
+	Button multiply= new Button("*");
+	Button divide = new Button("/");
+	Button power = new Button("^");
+	Button bracketOpen= new Button("(");
+	Button bracketClose= new Button(")"); 
+	Button num_1 = new Button("1");
+	Button num_2 = new Button("2");
+	Button num_3 = new Button("3");
+	Button num_4 = new Button("4");
+	Button num_5 = new Button("5");
+	Button num_6 = new Button("6");
+	Button num_7 = new Button("7");
+	Button num_8 = new Button("8");
+	Button num_9 = new Button("9");
+	Button num_0 = new Button("0");
 	
-	gridPane.add(equation,0,1);
-	gridPane.add(polynomial,0,2);
-	gridPane.add(x,0,3);
-	gridPane.add(powerX,1,3);
-	gridPane.add(y,0,4);
-	gridPane.add(powerY,1,4);
-	gridPane.add(plus,0,5);
-	gridPane.add(minus,1,5);
+	operatorGrid.add(plus,0,2);
+	operatorGrid.add(minus,1,2);
+	operatorGrid.add(multiply,2,2);
+	operatorGrid.add(divide,3,2);
+	operatorGrid.add(power,0,3);
+	operatorGrid.add(bracketOpen,1,3);
+	operatorGrid.add(bracketClose,2,3);
+
+	numberGrid.add(num_1,0,0);
+	numberGrid.add(num_2,1,0);
+	numberGrid.add(num_3,2,0);
+	numberGrid.add(num_4,0,1);
+	numberGrid.add(num_5,1,1);
+	numberGrid.add(num_6,2,1);
+	numberGrid.add(num_7,0,2);
+	numberGrid.add(num_8,1,2);	
+	numberGrid.add(num_9,2,2);
+	numberGrid.add(num_0,1,3);
  	
-	// Group heading_Grp = new Group(equation,polynomial);
-	// Group equation_Grp = new Group(text);
-	// Group input_Grp = new Group(x,y,powerX,powerY);
-	// Group operations_Grp = new Group(plus,minus);
-	
-	// Group root = new Group(heading_Grp,equation_Grp,input_Grp,operations_Grp,gridPane);
+	VBox interaction = new VBox(5);
+	interaction.setPadding(new Insets(10, 10, 10, 10));
+	interaction.getChildren().addAll(variable_txt,x_btn,operator_txt,operatorGrid,number_txt,numberGrid);
        
-	Scene scene = new Scene(gridPane);   
+	Scene scene = new Scene(interaction);   
 
-//  	x.setOnMouseClicked((new EventHandler<MouseEvent>() { 
-//         public void handle(MouseEvent event) { 
-//         Text text = new Text("x^"+powerX.getText());
-//         text.setX(i+60);
-// 	text.setY(100);
-//  	i=i+70;
-//         text.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 20)); 
-// 	root.getChildren().add(text);
+	// x_btn.setOnMouseClicked((new EventHandler<MouseEvent>() { 
+	// 	public void handle(MouseEvent event) {
+			
+	// 	}
+	// }));
 
-//        } 
-//       })); 
+	// power.setOnMouseClicked((new EventHandler<MouseEvent>() { 
+	// 	public void handle(MouseEvent event) {
+	// 		return;
+	// 	}
+	// }));
 // 	y.setOnMouseClicked((new EventHandler<MouseEvent>() { 
 //         public void handle(MouseEvent event) { 
 //         Text text = new Text("y^"+powerY.getText());
@@ -146,8 +124,8 @@ int i=200;
 private boolean isInt(TextField input,String message)
 {
 try{
-int power = Integer.parseInt(input.getText());
-System.out.println(power);
+int power1 = Integer.parseInt(input.getText());
+System.out.println(power1);
 return true;
 }
 catch(NumberFormatException e){
