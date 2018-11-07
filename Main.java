@@ -15,15 +15,13 @@ public class Main extends Application {
 	double power_of_x = 0,coefficient_of_x = 0,prevTerm = 0;
 	int term_count = 0,raised = 0, sign = 1,decimal_point = 0,decimal_part = 0,button_number,buttonX,buttonY;
 	String string_eqn = new String("y = ");
-	String string_val = new String("y: ");
+	String string_val = new String("");
 
 	public double[] calc_term(double temp_coefficient_of_x,double temp_power_of_x)
 	{
 		double termPlot[] = new  double[21];
 		for(int a = -10, b=0; a<=10;a++,b++)
-		{
 			termPlot[b] = temp_coefficient_of_x*java.lang.Math.pow(a,temp_power_of_x);
-		}
 		return termPlot;
 	}
 
@@ -67,30 +65,22 @@ public class Main extends Application {
 		Button bracketClose= new Button(")");
 		Button[] button = new Button[10];
 		Button trace = new Button("Trace_it_!!");
-		for(button_number = 0; button_number < button.length; button_number++) {
-	            button[button_number] = new Button(Integer.toString(button_number));
-	        }	
+		for(button_number = 0; button_number < button.length; button_number++)
+	            button[button_number] = new Button(Integer.toString(button_number));	
 		
 		operatorGrid.add(plus,0,0);
 		operatorGrid.add(minus,1,0);
 		operatorGrid.add(decimal,2,0);
 		operatorGrid.add(power,3,0);
-		//operatorGrid.add(bracketOpen,1,3);
-		//operatorGrid.add(bracketClose,2,3);
 
-		for(buttonY=0,button_number=1;buttonY<3;buttonY++){
+		for(buttonY=0,button_number=1;buttonY<3;buttonY++)
 			for(buttonX=0;buttonX<3;buttonX++,button_number++)
-			{
 				numberGrid.add(button[button_number],buttonX,buttonY);
-			}
-		}
 		numberGrid.add(button[0],1,3);
 	 	
 		VBox interaction = new VBox(5);
 		interaction.setPadding(new Insets(10, 10, 10, 10));
-		interaction.getChildren().addAll(variable_txt,x_btn,operator_txt,operatorGrid,number_txt,numberGrid,trace,equation,ordinate);
-	       
-		Scene scene = new Scene(interaction);    
+		interaction.getChildren().addAll(variable_txt,x_btn,operator_txt,operatorGrid,number_txt,numberGrid,trace,equation,ordinate);   
 
 		x_btn.setOnMouseClicked((new EventHandler<MouseEvent>() { 
 			public void handle(MouseEvent event) {
@@ -101,7 +91,7 @@ public class Main extends Application {
 				power_of_x = 1;	//default power of x;
 				decimal_point = 0;
 				sign = 1;
-				string_eqn+="x";
+				string_eqn+=" x";
 				equation.setText(string_eqn); ordinate.setText(string_val);	
 			}
 		}));
@@ -149,13 +139,13 @@ public class Main extends Application {
 					y[m] = 0;
 					for(int n=0;n<term_count;n++)
 						y[m] += term[n][m];
-					string_val+= y[m]+" ";
+					string_val+= "\n"+y[m];
 				}
 				ordinate.setText(string_val);
 				sign = 1;
 				term_count = 0;
 				string_eqn = "y = ";
-				string_val = "y: "; 
+				string_val = " "; 
 			}
 		}));
 
@@ -175,6 +165,8 @@ public class Main extends Application {
 				}
 			}));	
 		}
+
+		Scene scene = new Scene(interaction,200,700); 
 		stage.setTitle("Trace_it_!!");
 		stage.setScene(scene);
 		stage.show();
