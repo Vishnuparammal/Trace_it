@@ -13,7 +13,7 @@ public class Main extends Application {
 	double[] y = new double [21];
 	double[][] term = new double[100][21];
 	double power_of_x = 0,coefficient_of_x = 0,prevTerm = 0;
-	int term_count = 0,raised = 0, sign = 1,button_number,buttonX,buttonY;
+	int term_count = 0,raised = 0, sign = 1,decimal_point = 0,decimal_part = 0,button_number,buttonX,buttonY;
 	String string_eqn = new String("y = ");
 	String string_val = new String("y: ");
 
@@ -29,13 +29,18 @@ public class Main extends Application {
 
 	public void termEnd()
 	{
-			if(raised==1)
+			if(raised==1 && prevTerm==0)
+			{
+				sign = -1;
+				return;
+			}
+			else if(raised==1)
 				power_of_x = sign * prevTerm;
 			else if(prevTerm!=0)
 				coefficient_of_x = sign * prevTerm;
 			term[term_count] = calc_term(coefficient_of_x,power_of_x);
 			term_count+=1;
-			
+			decimal_point = 0;
 			power_of_x = 0;
 			coefficient_of_x = 0;
 			raised = 0;
@@ -56,8 +61,7 @@ public class Main extends Application {
 		Button x_btn= new Button("x"); 
 		Button plus = new Button("+");
 		Button minus = new Button("-");
-		Button multiply= new Button("*");
-		Button divide = new Button("/");
+		Button decimal= new Button(".");
 		Button power = new Button("^");
 		Button bracketOpen= new Button("(");
 		Button bracketClose= new Button(")");
@@ -69,9 +73,8 @@ public class Main extends Application {
 		
 		operatorGrid.add(plus,0,0);
 		operatorGrid.add(minus,1,0);
-		//operatorGrid.add(multiply,2,2);
-		//operatorGrid.add(divide,3,2);
-		operatorGrid.add(power,2,0);
+		operatorGrid.add(decimal,2,0);
+		operatorGrid.add(power,3,0);
 		//operatorGrid.add(bracketOpen,1,3);
 		//operatorGrid.add(bracketClose,2,3);
 
@@ -96,7 +99,7 @@ public class Main extends Application {
 					coefficient_of_x = sign * prevTerm;
 				prevTerm = 0;
 				power_of_x = 1;	//default power of x;
-
+				decimal_point = 0;
 				sign = 1;
 				string_eqn+="x";
 				equation.setText(string_eqn); ordinate.setText(string_val);	
@@ -117,6 +120,15 @@ public class Main extends Application {
 				termEnd();
 				sign = -1;
 				string_eqn+=" -";
+				equation.setText(string_eqn); ordinate.setText(string_val);
+			}
+		}));
+
+		decimal.setOnMouseClicked((new EventHandler<MouseEvent>() { 
+			public void handle(MouseEvent event) {
+				decimal_point = 1;
+				decimal_part = 0;
+				string_eqn+=".";
 				equation.setText(string_eqn); ordinate.setText(string_val);
 			}
 		}));
@@ -151,7 +163,13 @@ public class Main extends Application {
 			final Button buttonI = button[button_number];
 			buttonI.setOnMouseClicked((new EventHandler<MouseEvent>() { 
 				public void handle(MouseEvent event) {
-							prevTerm = prevTerm*10 + Integer.parseInt(buttonI.getText());
+							if(decimal_point==1)
+							{
+								decimal_part-=1;
+								prevTerm+= Integer.parseInt(buttonI.getText())*java.lang.Math.pow(10,decimal_part);
+							}
+							else
+								prevTerm = prevTerm*10 + Integer.parseInt(buttonI.getText());
 							string_eqn+=buttonI.getText();
 							equation.setText(string_eqn); ordinate.setText(string_val);
 				}
