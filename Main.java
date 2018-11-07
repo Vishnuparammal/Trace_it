@@ -10,8 +10,8 @@ import javafx.geometry.*;
 import javafx.event.*;     
 
 public class Main extends Application { 
-	double[] y = new double [21];
-	double[][] term = new double[100][21];
+	double[] y = new double [201];
+	double[][] term = new double[100][201];
 	double power_of_x = 0,coefficient_of_x = 0,prevTerm = 0;
 	int term_count = 0,raised = 0, sign = 1,decimal_point = 0,decimal_part = 0,button_number,buttonX,buttonY;
 	String string_eqn = new String("y = ");
@@ -19,9 +19,9 @@ public class Main extends Application {
 
 	public double[] calc_term(double temp_coefficient_of_x,double temp_power_of_x)
 	{
-		double termPlot[] = new  double[21];
-		for(int a = -10, b=0; a<=10;a++,b++)
-			termPlot[b] = temp_coefficient_of_x*java.lang.Math.pow(a,temp_power_of_x);
+		double termPlot[] = new  double[201];
+		for(double a = -10, b=0; a<=10;a+=0.1,b++)
+			termPlot[(int)b] = temp_coefficient_of_x*java.lang.Math.pow(a,temp_power_of_x);
 		return termPlot;
 	}
 
@@ -134,7 +134,7 @@ public class Main extends Application {
 		trace.setOnMouseClicked((new EventHandler<MouseEvent>() { 
 			public void handle(MouseEvent event) {			
 				termEnd();
-				for(int m=0;m<21;m++)
+				for(int m=0;m<201;m++)
 				{
 					y[m] = 0;
 					for(int n=0;n<term_count;n++)
