@@ -17,7 +17,8 @@ public class Main extends Application {
 	double prevTerm = 0;
 	double power_of_x = 0,coefficient_of_x = 0;
 	int sign = 1;
-	String string = new String("");
+	String string_eqn = new String("y = ");
+	String string_val = new String("y: ");
 	public double[] calc_term(double temp_coefficient_of_x,double temp_power_of_x)
 	{
 		double termPlot[] = new  double[21];
@@ -36,6 +37,8 @@ public class Main extends Application {
 	Text variable_txt = new Text("Variable");
 	Text operator_txt = new Text("Operator");
 	Text number_txt = new Text("Number");
+	Text equation = new Text(string_eqn);
+	Text ordinate = new Text(string_val);
 
 	Button x_btn= new Button("x"); 
 	Button plus = new Button("+");
@@ -78,7 +81,7 @@ public class Main extends Application {
  	
 	VBox interaction = new VBox(5);
 	interaction.setPadding(new Insets(10, 10, 10, 10));
-	interaction.getChildren().addAll(variable_txt,x_btn,operator_txt,operatorGrid,number_txt,numberGrid,trace);
+	interaction.getChildren().addAll(variable_txt,x_btn,operator_txt,operatorGrid,number_txt,numberGrid,trace,equation,ordinate);
        
 	Scene scene = new Scene(interaction);    
 
@@ -90,7 +93,9 @@ public class Main extends Application {
 			prevTerm = 0;
 			power_of_x = 1;	//default power of x;
 
-			sign = 1;	
+			sign = 1;
+			string_eqn+="x";
+			equation.setText(string_eqn); ordinate.setText(string_val);	
 		}
 	}));
 
@@ -109,13 +114,17 @@ public class Main extends Application {
 			coefficient_of_x = 0;
 			raised = 0;
 			prevTerm = 0;
-			sign = 1;		
+			sign = 1;
+			string_eqn+=" +";
+			equation.setText(string_eqn); ordinate.setText(string_val);		
 		}
 	}));
 
 	power.setOnMouseClicked((new EventHandler<MouseEvent>() { 
 		public void handle(MouseEvent event) {
-			raised = 1;		
+			raised = 1;
+			string_eqn+="^";
+			equation.setText(string_eqn); ordinate.setText(string_val);	
 		}
 	}));
 
@@ -134,6 +143,8 @@ public class Main extends Application {
 			prevTerm = 0;
 
 			sign = -1;
+			string_eqn+=" -";
+			equation.setText(string_eqn); ordinate.setText(string_val);
 		}
 	}));
 
@@ -151,119 +162,105 @@ public class Main extends Application {
 			raised = 0;
 			prevTerm = 0;
 			sign = 1;
-
+			
 			for(int m=0;m<21;m++)
 			{
+				y[m] = 0;
 				for(int n=0;n<term_count;n++)
 					y[m] += term[n][m];
-				string+= y[m]+" ";
+				string_val+= y[m]+" ";
 			}
-			Text text = new Text(string);
-			interaction.getChildren().addAll(text);
+			ordinate.setText(string_val);
+
+			term_count = 0;
+			string_eqn = "y = ";
+			string_val = "y: "; 
+
 		}
 	}));
 
 	num_1.setOnMouseClicked((new EventHandler<MouseEvent>() { 
 		public void handle(MouseEvent event) {
 					prevTerm = prevTerm*10 + 1;
+					string_eqn+="1";
+					equation.setText(string_eqn); ordinate.setText(string_val);
 		}
 	}));
 
 	num_2.setOnMouseClicked((new EventHandler<MouseEvent>() { 
 		public void handle(MouseEvent event) {
 					prevTerm = prevTerm*10 + 2;
+					string_eqn+="2";
+					equation.setText(string_eqn); ordinate.setText(string_val);
 		}
 	}));
 
 	num_3.setOnMouseClicked((new EventHandler<MouseEvent>() { 
 		public void handle(MouseEvent event) {
 					prevTerm = prevTerm*10 + 3;
+					string_eqn+="3";
+					equation.setText(string_eqn); ordinate.setText(string_val);
 		}
 	}));
 
 	num_4.setOnMouseClicked((new EventHandler<MouseEvent>() { 
 		public void handle(MouseEvent event) {
 					prevTerm = prevTerm*10 + 4;
+					string_eqn+="4";
+					equation.setText(string_eqn); ordinate.setText(string_val);
 		}
 	}));
 
 	num_5.setOnMouseClicked((new EventHandler<MouseEvent>() { 
 		public void handle(MouseEvent event) {
 					prevTerm = prevTerm*10 + 5;
+					string_eqn+="5";
+					equation.setText(string_eqn); ordinate.setText(string_val);
 		}
 	}));
 
 	num_6.setOnMouseClicked((new EventHandler<MouseEvent>() { 
 		public void handle(MouseEvent event) {
 					prevTerm = prevTerm*10 + 6;
+					string_eqn+="6";
+					equation.setText(string_eqn); ordinate.setText(string_val);
 		}
 	}));
 
 	num_7.setOnMouseClicked((new EventHandler<MouseEvent>() { 
 		public void handle(MouseEvent event) {
 					prevTerm = prevTerm*10 + 7;
+					string_eqn+="7";
+					equation.setText(string_eqn); ordinate.setText(string_val);
 		}
 	}));
 
 	num_8.setOnMouseClicked((new EventHandler<MouseEvent>() { 
 		public void handle(MouseEvent event) {
 					prevTerm = prevTerm*10 + 8;
+					string_eqn+="8";
+					equation.setText(string_eqn); ordinate.setText(string_val);
 		}
 	}));
 
 	num_9.setOnMouseClicked((new EventHandler<MouseEvent>() { 
 		public void handle(MouseEvent event) {
 					prevTerm = prevTerm*10 + 9;
+					string_eqn+="9";
+					equation.setText(string_eqn); ordinate.setText(string_val);
 		}
 	}));
 
 	num_0.setOnMouseClicked((new EventHandler<MouseEvent>() { 
 		public void handle(MouseEvent event) {
 					prevTerm = prevTerm*10 + 0;
+					string_eqn+="0";
+					equation.setText(string_eqn); ordinate.setText(string_val);
 		}
 	}));
 
-	
-
-
-// 	y.setOnMouseClicked((new EventHandler<MouseEvent>() { 
-//         public void handle(MouseEvent event) { 
-//         Text text = new Text("y^"+powerY.getText());
-//         text.setX(i+60);
-// 	text.setY(100);
-//  	i=i+70;
-//         text.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 20)); 
-// root.getChildren().add(text);
-
-//        } 
-//       })); 
-//  plus.setOnMouseClicked((new EventHandler<MouseEvent>() { 
-//          public void handle(MouseEvent event) { 
-//              Text text = new Text("+");
-//              text.setX(i+40);
-// 	     text.setY(110);
-//  	     i=i+10;
-//              text.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 20)); 
-// root.getChildren().add(text);
-
-//        } 
-//       })); 
-// minus.setOnMouseClicked((new EventHandler<MouseEvent>() { 
-//          public void handle(MouseEvent event) { 
-//              Text text = new Text("-");
-//              text.setX(i+40);
-// 	     text.setY(100);
-//  	     i=i+10;
-//              text.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 20)); 
-// root.getChildren().add(text);
-
-//        } 
-//       })); 
-
-
-     
      //Setting title to the Stage 
-      stage.setTitle("Registration Form"); 
+      stage.setTitle("Trace_it_!!"); 
          
       //Adding scene to the stage 
       stage.setScene(scene);  
@@ -272,17 +269,6 @@ public class Main extends Application {
       stage.show(); 
    }      
 
-private boolean isInt(TextField input,String message)
-{
-try{
-int power1 = Integer.parseInt(input.getText());
-System.out.println(power1);
-return true;
-}
-catch(NumberFormatException e){
-return false;
-}
-}
    public static void main(String args[]){ 
       launch(args); 
    } 
