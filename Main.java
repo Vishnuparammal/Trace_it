@@ -16,7 +16,7 @@ public class Main extends Application {
 	int raised = 0;
 	double prevTerm = 0;
 	double power_of_x = 0,coefficient_of_x = 0;
-	//int sign = 1;
+	int sign = 1;
 	String string = new String("");
 	public double[] calc_term(double temp_coefficient_of_x,double temp_power_of_x)
 	{
@@ -58,10 +58,10 @@ public class Main extends Application {
 	Button trace = new Button("Trace_it_!!");
 	
 	operatorGrid.add(plus,0,0);
-	//operatorGrid.add(minus,1,2);
+	operatorGrid.add(minus,1,0);
 	//operatorGrid.add(multiply,2,2);
 	//operatorGrid.add(divide,3,2);
-	operatorGrid.add(power,1,0);
+	operatorGrid.add(power,2,0);
 	//operatorGrid.add(bracketOpen,1,3);
 	//operatorGrid.add(bracketClose,2,3);
 
@@ -84,11 +84,13 @@ public class Main extends Application {
 
 	x_btn.setOnMouseClicked((new EventHandler<MouseEvent>() { 
 		public void handle(MouseEvent event) {
-			coefficient_of_x = 1;
+			coefficient_of_x = sign * 1;
 			if(prevTerm!=0)
-				coefficient_of_x = prevTerm;
+				coefficient_of_x = sign * prevTerm;
 			prevTerm = 0;
-			power_of_x = 1;	
+			power_of_x = 1;	//default power of x;
+
+			sign = 1;	
 		}
 	}));
 
@@ -97,16 +99,17 @@ public class Main extends Application {
 	plus.setOnMouseClicked((new EventHandler<MouseEvent>() { 
 		public void handle(MouseEvent event) {
 			if(raised==1)
-				power_of_x = prevTerm;
+				power_of_x = sign * prevTerm;
 			else if(prevTerm!=0)
-				coefficient_of_x = prevTerm;
+				coefficient_of_x = sign * prevTerm;
 			term[term_count] = calc_term(coefficient_of_x,power_of_x);
 			term_count+=1;
 			
 			power_of_x = 0;
 			coefficient_of_x = 0;
 			raised = 0;
-			prevTerm = 0;		
+			prevTerm = 0;
+			sign = 1;		
 		}
 	}));
 
@@ -116,27 +119,12 @@ public class Main extends Application {
 		}
 	}));
 
-	// minus.setOnMouseClicked((new EventHandler<MouseEvent>() { 
-	// 	public void handle(MouseEvent event) {
-	// 		// if(prevTerm!=0)
-	// 		// {
-	// 		// 	power_of_x = sign * prevTerm;
-	// 		// }
-	// 		prevTerm = 0;
-
-	// 		term[term_count] = calc_term(coefficient_of_x,power_of_x);
-	// 		// sign = -1;
-	// 		term_count++;
-	// 	}
-	// }));
-
-	trace.setOnMouseClicked((new EventHandler<MouseEvent>() { 
+	minus.setOnMouseClicked((new EventHandler<MouseEvent>() { 
 		public void handle(MouseEvent event) {
-			
 			if(raised==1)
-				power_of_x = prevTerm;
+				power_of_x = sign * prevTerm;
 			else if(prevTerm!=0)
-				coefficient_of_x = prevTerm;
+				coefficient_of_x = sign * prevTerm;
 			term[term_count] = calc_term(coefficient_of_x,power_of_x);
 			term_count+=1;
 			
@@ -144,6 +132,25 @@ public class Main extends Application {
 			coefficient_of_x = 0;
 			raised = 0;
 			prevTerm = 0;
+
+			sign = -1;
+		}
+	}));
+
+	trace.setOnMouseClicked((new EventHandler<MouseEvent>() { 
+		public void handle(MouseEvent event) {			
+			if(raised==1)
+				power_of_x = sign * prevTerm;
+			else if(prevTerm!=0)
+				coefficient_of_x = sign * prevTerm;
+			term[term_count] = calc_term(coefficient_of_x,power_of_x);
+			term_count+=1;
+			
+			power_of_x = 0;
+			coefficient_of_x = 0;
+			raised = 0;
+			prevTerm = 0;
+			sign = 1;
 
 			for(int m=0;m<21;m++)
 			{
