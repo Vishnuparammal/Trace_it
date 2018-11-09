@@ -2,6 +2,7 @@ import javafx.application.Application;
 import javafx.collections.*;  
 import javafx.stage.*; 
 import javafx.scene.*;
+import javafx.scene.chart.*;
 import javafx.scene.control.*;
 import javafx.scene.layout.*; 
 import javafx.scene.input.*; 
@@ -10,8 +11,11 @@ import javafx.geometry.*;
 import javafx.event.*;     
 
 public class Main extends Application { 
-	double[] y = new double [201];
-	double[][] term = new double[100][201];
+	double x_max = 10, x_min = -10, x_increment = 0.1,x;
+	int no_of_points = (int)((x_max - x_min)/x_increment + 1.0);
+	int m;
+	double[] y = new double [no_of_points];
+	double[][] term = new double[100][no_of_points];	// supported for upto 100 terms
 	double power_of_x = 0,coefficient_of_x = 0,prevTerm = 0;
 	int term_count = 0,raised = 0, sign = 1,decimal_point = 0,decimal_part = 0,button_number,buttonX,buttonY;
 	String string_eqn = new String("y = ");
@@ -19,7 +23,7 @@ public class Main extends Application {
 
 	public double[] calc_term(double temp_coefficient_of_x,double temp_power_of_x)
 	{
-		double termPlot[] = new  double[201];
+		double termPlot[] = new  double[no_of_points];
 		for(double a = -10, b=0; a<=10;a+=0.1,b++)
 			termPlot[(int)b] = temp_coefficient_of_x*java.lang.Math.pow(a,temp_power_of_x);
 		return termPlot;
@@ -78,9 +82,23 @@ public class Main extends Application {
 				numberGrid.add(button[button_number],buttonX,buttonY);
 		numberGrid.add(button[0],1,3);
 	 	
+		NumberAxis xAxis = new NumberAxis(x_min,x_max,1.0);
+        xAxis.setLabel("x");
+
+        NumberAxis yAxis = new NumberAxis(x_min,x_max,1.0);
+        xAxis.setLabel("y");
+
+        LineChart linechart = new LineChart(xAxis,yAxis);
+
+        
+
 		VBox interaction = new VBox(5);
 		interaction.setPadding(new Insets(10, 10, 10, 10));
 		interaction.getChildren().addAll(variable_txt,x_btn,operator_txt,operatorGrid,number_txt,numberGrid,trace,equation,ordinate);   
+
+		HBox graph = new HBox(5);
+		graph.setPadding(new Insets(10, 10, 10, 10));
+		graph.getChildren().addAll(interaction,linechart);
 
 		x_btn.setOnMouseClicked((new EventHandler<MouseEvent>() { 
 			public void handle(MouseEvent event) {
@@ -134,13 +152,16 @@ public class Main extends Application {
 		trace.setOnMouseClicked((new EventHandler<MouseEvent>() { 
 			public void handle(MouseEvent event) {			
 				termEnd();
-				for(int m=0;m<201;m++)
+				XYChart.Series series = new XYChart.Series();
+				for(m=0,x=x_min ;m< no_of_points; m++,x+=x_increment)
 				{
 					y[m] = 0;
 					for(int n=0;n<term_count;n++)
 						y[m] += term[n][m];
+					series.getData().add(new XYChart.Data(x,y[m]));
 					string_val+= "\n"+y[m];
 				}
+				linechart.getData().add(series);
 				ordinate.setText(string_val);
 				sign = 1;
 				term_count = 0;
@@ -166,7 +187,11 @@ public class Main extends Application {
 			}));	
 		}
 
-		Scene scene = new Scene(interaction,200,700); 
+
+
+       
+
+		Scene scene = new Scene(graph,800,800); 
 		stage.setTitle("Trace_it_!!");
 		stage.setScene(scene);
 		stage.show();
