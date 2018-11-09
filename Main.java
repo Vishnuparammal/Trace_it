@@ -1,16 +1,19 @@
 import javafx.application.Application; 
-import javafx.collections.*;  
-import javafx.stage.*; 
+import javafx.collections.*;
+import javafx.stage.*;
 import javafx.scene.*;
 import javafx.scene.chart.*;
 import javafx.scene.control.*;
-import javafx.scene.layout.*; 
-import javafx.scene.input.*; 
-import javafx.scene.text.*;  
-import javafx.geometry.*; 
-import javafx.event.*;     
+import javafx.scene.layout.*;
+import javafx.scene.input.*;
+import javafx.scene.text.*;
+import javafx.geometry.*;
+import javafx.event.*;
 
 public class Main extends Application { 
+	
+	// VARIABLES
+
 	double x_max = 10, x_min = -10, x_increment = 0.1,x;
 	int no_of_points = (int)((x_max - x_min)/x_increment + 1.0);
 	int m;
@@ -19,7 +22,8 @@ public class Main extends Application {
 	double power_of_x = 0,coefficient_of_x = 0,prevTerm = 0;
 	int term_count = 0,raised = 0, sign = 1,decimal_point = 0,decimal_part = 0,button_number,buttonX,buttonY;
 	String string_eqn = new String("y = ");
-	String string_val = new String("");
+	
+	// CALCULATE EACH TERM - GENERAL FORM - coeff * x ^ power
 
 	public double[] calc_term(double temp_coefficient_of_x,double temp_power_of_x)
 	{
@@ -28,6 +32,8 @@ public class Main extends Application {
 			termPlot[(int)b] = temp_coefficient_of_x*java.lang.Math.pow(a,temp_power_of_x);
 		return termPlot;
 	}
+
+	// RESET VARIABLES AND SET CONSTANTS WHEN TERM ENDS
 
 	public void termEnd()
 	{
@@ -58,47 +64,49 @@ public class Main extends Application {
 		Text operator_txt = new Text("Operator");
 		Text number_txt = new Text("Number");
 		Text equation = new Text(string_eqn);
-		Text ordinate = new Text(string_val);
 
 		Button x_btn= new Button("x"); 
 		Button plus = new Button("+");
 		Button minus = new Button("-");
 		Button decimal= new Button(".");
 		Button power = new Button("^");
-		Button bracketOpen= new Button("(");
-		Button bracketClose= new Button(")");
-		Button[] button = new Button[10];
+		Button[] button = new Button[10];			// button array
 		Button trace = new Button("Trace_it_!!");
-		for(button_number = 0; button_number < button.length; button_number++)
-	            button[button_number] = new Button(Integer.toString(button_number));	
 		
+		// initialize each button in array
+		for(button_number = 0; button_number < button.length; button_number++)
+			button[button_number] = new Button(Integer.toString(button_number));	
+		
+		// position of operators
 		operatorGrid.add(plus,0,0);
 		operatorGrid.add(minus,1,0);
 		operatorGrid.add(decimal,2,0);
 		operatorGrid.add(power,3,0);
 
+		// position of number in mobile keypad form
 		for(buttonY=0,button_number=1;buttonY<3;buttonY++)
 			for(buttonX=0;buttonX<3;buttonX++,button_number++)
 				numberGrid.add(button[button_number],buttonX,buttonY);
 		numberGrid.add(button[0],1,3);
-	 	
+		
+		// graph set-up
 		NumberAxis xAxis = new NumberAxis(x_min,x_max,1.0);
-        xAxis.setLabel("x");
+		xAxis.setLabel("x");
+		NumberAxis yAxis = new NumberAxis(x_min,x_max,1.0);
+		xAxis.setLabel("y");
 
-        NumberAxis yAxis = new NumberAxis(x_min,x_max,1.0);
-        xAxis.setLabel("y");
+		LineChart linechart = new LineChart(xAxis,yAxis);
 
-        LineChart linechart = new LineChart(xAxis,yAxis);
-
-        
-
+		// layout of all elements on page
 		VBox interaction = new VBox(5);
 		interaction.setPadding(new Insets(10, 10, 10, 10));
-		interaction.getChildren().addAll(variable_txt,x_btn,operator_txt,operatorGrid,number_txt,numberGrid,trace,equation,ordinate);   
+		interaction.getChildren().addAll(variable_txt,x_btn,operator_txt,operatorGrid,number_txt,numberGrid,trace,equation);   
 
 		HBox graph = new HBox(5);
 		graph.setPadding(new Insets(10, 10, 10, 10));
 		graph.getChildren().addAll(interaction,linechart);
+
+		// BUTTON CLICK EVENTS
 
 		x_btn.setOnMouseClicked((new EventHandler<MouseEvent>() { 
 			public void handle(MouseEvent event) {
@@ -110,7 +118,7 @@ public class Main extends Application {
 				decimal_point = 0;
 				sign = 1;
 				string_eqn+=" x";
-				equation.setText(string_eqn); ordinate.setText(string_val);	
+				equation.setText(string_eqn);	
 			}
 		}));
 
@@ -119,7 +127,7 @@ public class Main extends Application {
 				termEnd();
 				sign = 1;
 				string_eqn+=" +";
-				equation.setText(string_eqn); ordinate.setText(string_val);		
+				equation.setText(string_eqn);		
 			}
 		}));
 
@@ -128,7 +136,7 @@ public class Main extends Application {
 				termEnd();
 				sign = -1;
 				string_eqn+=" -";
-				equation.setText(string_eqn); ordinate.setText(string_val);
+				equation.setText(string_eqn);
 			}
 		}));
 
@@ -137,7 +145,7 @@ public class Main extends Application {
 				decimal_point = 1;
 				decimal_part = 0;
 				string_eqn+=".";
-				equation.setText(string_eqn); ordinate.setText(string_val);
+				equation.setText(string_eqn);
 			}
 		}));
 
@@ -145,28 +153,7 @@ public class Main extends Application {
 			public void handle(MouseEvent event) {
 				raised = 1;
 				string_eqn+="^";
-				equation.setText(string_eqn); ordinate.setText(string_val);	
-			}
-		}));
-
-		trace.setOnMouseClicked((new EventHandler<MouseEvent>() { 
-			public void handle(MouseEvent event) {			
-				termEnd();
-				XYChart.Series series = new XYChart.Series();
-				for(m=0,x=x_min ;m< no_of_points; m++,x+=x_increment)
-				{
-					y[m] = 0;
-					for(int n=0;n<term_count;n++)
-						y[m] += term[n][m];
-					series.getData().add(new XYChart.Data(x,y[m]));
-					string_val+= "\n"+y[m];
-				}
-				linechart.getData().add(series);
-				ordinate.setText(string_val);
-				sign = 1;
-				term_count = 0;
-				string_eqn = "y = ";
-				string_val = " "; 
+				equation.setText(string_eqn);
 			}
 		}));
 
@@ -182,22 +169,37 @@ public class Main extends Application {
 							else
 								prevTerm = prevTerm*10 + Integer.parseInt(buttonI.getText());
 							string_eqn+=buttonI.getText();
-							equation.setText(string_eqn); ordinate.setText(string_val);
+							equation.setText(string_eqn);
 				}
 			}));	
 		}
 
+		trace.setOnMouseClicked((new EventHandler<MouseEvent>() { 
+			public void handle(MouseEvent event) {			
+				termEnd();
+				XYChart.Series series = new XYChart.Series();
+				for(m=0,x=x_min ;m< no_of_points; m++,x+=x_increment)
+				{
+					y[m] = 0;
+					for(int n=0;n<term_count;n++)
+						y[m] += term[n][m];
+					series.getData().add(new XYChart.Data(x,y[m]));
+				}
+				linechart.getData().add(series);
+				sign = 1;
+				term_count = 0;
+				string_eqn = "y = ";
+			}
+		}));
 
-
-       
-
+		// window set-up
 		Scene scene = new Scene(graph,800,800); 
 		stage.setTitle("Trace_it_!!");
 		stage.setScene(scene);
 		stage.show();
-	}      
+	}
 
 	public static void main(String args[]){
 		launch(args);
-	} 
+	}
 }
