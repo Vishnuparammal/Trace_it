@@ -14,13 +14,15 @@ public class Main extends Application {
 	
 	// VARIABLES
 
-	double x_max = 10, x_min = -10, x_increment = 0.1,x;
-	int no_of_points = (int)((x_max - x_min)/x_increment + 1.0);
-	int m;
-	double[] y = new double [no_of_points];
-	double[][] term = new double[100][no_of_points];	// supported for upto 100 terms
-	double power_of_x = 0,coefficient_of_x = 0,prevTerm = 0;
-	int term_count = 0,raised = 0, sign = 1,decimal_point = 0,decimal_part = 0,button_number,buttonX,buttonY;
+	double x_max = 10, x_min = -10, x_increment = 0.1;			// change these to control points
+	int no_of_points = (int)((x_max - x_min)/x_increment + 1.0);// changes as per above params
+	int i,m,n;													// loop counters
+	double x;													// final x values to be plotted
+	double[] y = new double [no_of_points];						// final y values to be plotted
+	double[][] term = new double[100][no_of_points];			// supported for upto 100 terms
+	double power_of_x = 0,coefficient_of_x = 0,prevTerm = 0;	// term control vars
+	int term_count = 0,raised = 0, sign = 1,decimal_point = 0,decimal_part = 0;	// control triggers
+	int button_number,buttonX,buttonY;							// button controls
 	String string_eqn = new String("y = ");
 	
 	// CALCULATE EACH TERM - GENERAL FORM - coeff * x ^ power
@@ -28,8 +30,8 @@ public class Main extends Application {
 	public double[] calc_term(double temp_coefficient_of_x,double temp_power_of_x)
 	{
 		double termPlot[] = new  double[no_of_points];
-		for(double a = -10, b=0; a<=10;a+=0.1,b++)
-			termPlot[(int)b] = temp_coefficient_of_x*java.lang.Math.pow(a,temp_power_of_x);
+		for(x = x_min, i=0; x<= x_max; x += x_increment,i++)
+			termPlot[i] = temp_coefficient_of_x*java.lang.Math.pow(x,temp_power_of_x);
 		return termPlot;
 	}
 
@@ -93,18 +95,22 @@ public class Main extends Application {
 		NumberAxis xAxis = new NumberAxis(x_min,x_max,1.0);
 		xAxis.setLabel("x");
 		NumberAxis yAxis = new NumberAxis(x_min,x_max,1.0);
-		xAxis.setLabel("y");
+		yAxis.setLabel("y");
 
 		LineChart linechart = new LineChart(xAxis,yAxis);
 
 		// layout of all elements on page
-		VBox interaction = new VBox(5);
-		interaction.setPadding(new Insets(10, 10, 10, 10));
-		interaction.getChildren().addAll(variable_txt,x_btn,operator_txt,operatorGrid,number_txt,numberGrid,trace,equation);   
+		VBox input = new VBox(5);
+		input.setPadding(new Insets(10, 10, 10, 10));
+		input.getChildren().addAll(variable_txt,x_btn,operator_txt,operatorGrid,number_txt,numberGrid,trace);   
 
-		HBox graph = new HBox(5);
-		graph.setPadding(new Insets(10, 10, 10, 10));
-		graph.getChildren().addAll(interaction,linechart);
+		VBox output = new VBox(5);
+		output.setPadding(new Insets(10, 10, 10, 10));
+		output.getChildren().addAll(equation,linechart);
+
+		HBox finalScreen = new HBox(5);
+		finalScreen.setPadding(new Insets(10, 10, 10, 10));
+		finalScreen.getChildren().addAll(input,output);
 
 		// BUTTON CLICK EVENTS
 
@@ -193,7 +199,7 @@ public class Main extends Application {
 		}));
 
 		// window set-up
-		Scene scene = new Scene(graph,800,800); 
+		Scene scene = new Scene(finalScreen,finalScreen.getPrefWidth(),finalScreen.getPrefHeight()); 
 		stage.setTitle("Trace_it_!!");
 		stage.setScene(scene);
 		stage.show();
