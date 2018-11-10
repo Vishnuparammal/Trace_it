@@ -41,7 +41,6 @@ public class Main extends Application {
 	{
 			if(raised==1 && prevTerm==0)
 			{
-				sign = -1;
 				return;
 			}
 			else if(raised==1)
