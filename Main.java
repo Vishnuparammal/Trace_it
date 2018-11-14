@@ -48,8 +48,8 @@ public class Main extends Application {
 		decimal_point = 0;
 		power_of_x = 0;
 		coefficient_of_x = 0;
-		raised = 0;
 		prevTerm = 0;
+		raised = 0;
 	}
 
 	public void draw()
@@ -72,7 +72,8 @@ public class Main extends Application {
 			series.getData().add(new XYChart.Data(x,y[m]));
 		}
 		linechart.getData().add(series);
-		linechart.setAnimated(false);	
+		linechart.setAnimated(false);
+		linechart.setCreateSymbols(false);            //disables the points	
 	}
 
 	public void start(Stage stage)
@@ -91,7 +92,7 @@ public class Main extends Application {
 		Button decimal= new Button(".");
 		Button power = new Button("^");
 		Button[] button = new Button[10];			// button array
-		Button trace = new Button("Trace_it_!!");
+		Button reset = new Button("Reset");
 		
 		// initialize each button in array
 		for(button_number = 0; button_number < button.length; button_number++)
@@ -117,7 +118,7 @@ public class Main extends Application {
 		// layout of all elements on page
 		VBox input = new VBox(5);
 		input.setPadding(new Insets(10, 10, 10, 10));
-		input.getChildren().addAll(variable_txt,x_btn,operator_txt,operatorGrid,number_txt,numberGrid,trace);   
+		input.getChildren().addAll(variable_txt,x_btn,operator_txt,operatorGrid,number_txt,numberGrid,reset);   
 
 		VBox output = new VBox(5);
 		output.setPadding(new Insets(10, 10, 10, 10));
@@ -149,7 +150,8 @@ public class Main extends Application {
 
 		plus.setOnMouseClicked((new EventHandler<MouseEvent>() { 
 			public void handle(MouseEvent event) {
-				termEnd_reset();
+				if(!(raised==1 && prevTerm==0))
+					termEnd_reset();
 				sign = 1;
 				string_eqn+=" +";
 				equation.setText(string_eqn);		
@@ -158,7 +160,8 @@ public class Main extends Application {
 
 		minus.setOnMouseClicked((new EventHandler<MouseEvent>() { 
 			public void handle(MouseEvent event) {
-				termEnd_reset();
+				if(!(raised==1 && prevTerm==0))
+					termEnd_reset();
 				sign = -1;
 				string_eqn+=" -";
 				equation.setText(string_eqn);
@@ -201,12 +204,18 @@ public class Main extends Application {
 			}));	
 		}
 
-		trace.setOnMouseClicked((new EventHandler<MouseEvent>() { 
+		reset.setOnMouseClicked((new EventHandler<MouseEvent>() { 
 			public void handle(MouseEvent event) {			
 				termEnd_reset();
 				sign = 1;
 				term_count = 0;
 				string_eqn = "y = ";
+				equation.setText(string_eqn);
+				series.getData().clear();
+				linechart.getData().clear();
+				linechart.getData().add(series);
+				linechart.setAnimated(false);
+
 			}
 		}));
 
