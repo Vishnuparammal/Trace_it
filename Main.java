@@ -186,6 +186,7 @@ public class Main extends Application {
 					y[m] = 0;
 				}
 				linechart.getData().add(series);
+				linechart.setCreateSymbols(false);            //disables the points
 				sign = 1;
 				string_eqn = "y = ";
 			}
