@@ -19,20 +19,17 @@ public class Main extends Application {
 	int i,m,n;													// loop counters
 	double x;													// final x values to be plotted
 	double[] y = new double [no_of_points];						// final y values to be plotted
-	double[][] term = new double[100][no_of_points];			// supported for upto 100 terms
 	double power_of_x = 0,coefficient_of_x = 0,prevTerm = 0;	// term control vars
-	int term_count = 0,raised = 0, sign = 1,decimal_point = 0,decimal_part = 0;	// control triggers
+	int raised = 0, sign = 1,decimal_point = 0,decimal_part = 0;	// control triggers
 	int button_number,buttonX,buttonY;							// button controls
 	String string_eqn = new String("y = ");
 	
 	// CALCULATE EACH TERM - GENERAL FORM - coeff * x ^ power
 
-	public double[] calc_term(double temp_coefficient_of_x,double temp_power_of_x)
+	public void calc_term(double temp_coefficient_of_x,double temp_power_of_x)
 	{
-		double termPlot[] = new  double[no_of_points];
 		for(x = x_min, i=0; x<= x_max; x += x_increment,i++)
-			termPlot[i] = temp_coefficient_of_x*java.lang.Math.pow(x,temp_power_of_x);
-		return termPlot;
+			y[i] += temp_coefficient_of_x*java.lang.Math.pow(x,temp_power_of_x);
 	}
 
 	// RESET VARIABLES AND SET CONSTANTS WHEN TERM ENDS
@@ -47,8 +44,8 @@ public class Main extends Application {
 				power_of_x = sign * prevTerm;
 			else if(prevTerm!=0)
 				coefficient_of_x = sign * prevTerm;
-			term[term_count] = calc_term(coefficient_of_x,power_of_x);
-			term_count+=1;
+			calc_term(coefficient_of_x,power_of_x);
+			
 			decimal_point = 0;
 			power_of_x = 0;
 			coefficient_of_x = 0;
@@ -185,14 +182,11 @@ public class Main extends Application {
 				XYChart.Series series = new XYChart.Series();
 				for(m=0,x=x_min ;m< no_of_points; m++,x+=x_increment)
 				{
-					y[m] = 0;
-					for(int n=0;n<term_count;n++)
-						y[m] += term[n][m];
 					series.getData().add(new XYChart.Data(x,y[m]));
+					y[m] = 0;
 				}
 				linechart.getData().add(series);
 				sign = 1;
-				term_count = 0;
 				string_eqn = "y = ";
 			}
 		}));
