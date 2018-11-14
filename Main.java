@@ -19,38 +19,60 @@ public class Main extends Application {
 	int i,m,n;													// loop counters
 	double x;													// final x values to be plotted
 	double[] y = new double [no_of_points];						// final y values to be plotted
+	double[][] term = new double[100][no_of_points];			// supported for upto 100 terms
 	double power_of_x = 0,coefficient_of_x = 0,prevTerm = 0;	// term control vars
-	int raised = 0, sign = 1,decimal_point = 0,decimal_part = 0;	// control triggers
+	int term_count = 0,raised = 0, sign = 1,decimal_point = 0,decimal_part = 0;	// control triggers
 	int button_number,buttonX,buttonY;							// button controls
 	String string_eqn = new String("y = ");
+
+	NumberAxis xAxis = new NumberAxis(x_min,x_max,1.0);
+	NumberAxis yAxis = new NumberAxis(x_min,x_max,1.0);
+	LineChart linechart = new LineChart(xAxis,yAxis);
+	XYChart.Series series = new XYChart.Series();
 	
 	// CALCULATE EACH TERM - GENERAL FORM - coeff * x ^ power
 
-	public void calc_term(double temp_coefficient_of_x,double temp_power_of_x)
+	public double[] calc_term()
 	{
+		double termPlot[] = new  double[no_of_points];
 		for(x = x_min, i=0; x<= x_max; x += x_increment,i++)
-			y[i] += temp_coefficient_of_x*java.lang.Math.pow(x,temp_power_of_x);
+			termPlot[i] = coefficient_of_x*java.lang.Math.pow(x,power_of_x);
+		return termPlot;
 	}
 
 	// RESET VARIABLES AND SET CONSTANTS WHEN TERM ENDS
 
-	public void termEnd()
+	public void termEnd_reset()
+	{	
+		term_count+=1;
+		decimal_point = 0;
+		power_of_x = 0;
+		coefficient_of_x = 0;
+		raised = 0;
+		prevTerm = 0;
+	}
+
+	public void draw()
 	{
-			if(raised==1 && prevTerm==0)
-			{
-				return;
-			}
-			else if(raised==1)
-				power_of_x = sign * prevTerm;
-			else if(prevTerm!=0)
-				coefficient_of_x = sign * prevTerm;
-			calc_term(coefficient_of_x,power_of_x);
-			
-			decimal_point = 0;
-			power_of_x = 0;
-			coefficient_of_x = 0;
-			raised = 0;
-			prevTerm = 0;
+		if(raised==1 && prevTerm==0)
+			return;
+		else if(raised==1)
+			power_of_x = sign * prevTerm;
+		else if(prevTerm!=0)
+			coefficient_of_x = sign * prevTerm;
+		term[term_count] = calc_term();
+
+		series.getData().clear();
+		linechart.getData().clear();
+		for(m=0,x=x_min ;m< no_of_points; m++,x+=x_increment)
+		{
+			y[m] = 0;
+			for(n=0;n<=term_count;n++)
+				y[m] += term[n][m];
+			series.getData().add(new XYChart.Data(x,y[m]));
+		}
+		linechart.getData().add(series);
+		linechart.setAnimated(false);	
 	}
 
 	public void start(Stage stage)
@@ -88,12 +110,9 @@ public class Main extends Application {
 		numberGrid.add(button[0],1,3);
 		
 		// graph set-up
-		NumberAxis xAxis = new NumberAxis(x_min,x_max,1.0);
 		xAxis.setLabel("x");
-		NumberAxis yAxis = new NumberAxis(x_min,x_max,1.0);
 		yAxis.setLabel("y");
-
-		LineChart linechart = new LineChart(xAxis,yAxis);
+		linechart.setCreateSymbols(false);
 
 		// layout of all elements on page
 		VBox input = new VBox(5);
@@ -113,12 +132,16 @@ public class Main extends Application {
 		x_btn.setOnMouseClicked((new EventHandler<MouseEvent>() { 
 			public void handle(MouseEvent event) {
 				coefficient_of_x = sign * 1;
+				power_of_x = 1;					//default power of x;
+				
 				if(prevTerm!=0)
 					coefficient_of_x = sign * prevTerm;
+
+				draw();
 				prevTerm = 0;
-				power_of_x = 1;	//default power of x;
 				decimal_point = 0;
 				sign = 1;
+				
 				string_eqn+=" x";
 				equation.setText(string_eqn);	
 			}
@@ -126,7 +149,7 @@ public class Main extends Application {
 
 		plus.setOnMouseClicked((new EventHandler<MouseEvent>() { 
 			public void handle(MouseEvent event) {
-				termEnd();
+				termEnd_reset();
 				sign = 1;
 				string_eqn+=" +";
 				equation.setText(string_eqn);		
@@ -135,7 +158,7 @@ public class Main extends Application {
 
 		minus.setOnMouseClicked((new EventHandler<MouseEvent>() { 
 			public void handle(MouseEvent event) {
-				termEnd();
+				termEnd_reset();
 				sign = -1;
 				string_eqn+=" -";
 				equation.setText(string_eqn);
@@ -170,6 +193,8 @@ public class Main extends Application {
 							}
 							else
 								prevTerm = prevTerm*10 + Integer.parseInt(buttonI.getText());
+							
+							draw();
 							string_eqn+=buttonI.getText();
 							equation.setText(string_eqn);
 				}
@@ -178,16 +203,9 @@ public class Main extends Application {
 
 		trace.setOnMouseClicked((new EventHandler<MouseEvent>() { 
 			public void handle(MouseEvent event) {			
-				termEnd();
-				XYChart.Series series = new XYChart.Series();
-				for(m=0,x=x_min ;m< no_of_points; m++,x+=x_increment)
-				{
-					series.getData().add(new XYChart.Data(x,y[m]));
-					y[m] = 0;
-				}
-				linechart.getData().add(series);
-				linechart.setCreateSymbols(false);            //disables the points
+				termEnd_reset();
 				sign = 1;
+				term_count = 0;
 				string_eqn = "y = ";
 			}
 		}));
