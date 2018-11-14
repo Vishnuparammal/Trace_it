@@ -1,3 +1,4 @@
+import java.util.*;
 import javafx.application.Application; 
 import javafx.collections.*;
 import javafx.stage.*;
@@ -22,13 +23,14 @@ public class Main extends Application {
 	double[][] term = new double[100][no_of_points];			// supported for upto 100 terms
 	double power_of_x = 0,coefficient_of_x = 0,prevTerm = 0;	// term control vars
 	int term_count = 0,raised = 0, sign = 1,decimal_point = 0,decimal_part = 0;	// control triggers
-	int button_number,buttonX,buttonY;							// button controls
+	int button_number,buttonX,buttonY, curveNo = 0;							// button controls
 	String string_eqn = new String("y = ");
 
 	NumberAxis xAxis = new NumberAxis(x_min,x_max,1.0);
 	NumberAxis yAxis = new NumberAxis(x_min,x_max,1.0);
 	LineChart linechart = new LineChart(xAxis,yAxis);
-	XYChart.Series series = new XYChart.Series();
+	List<XYChart.Series> series = new ArrayList<>();
+	
 	
 	// CALCULATE EACH TERM - GENERAL FORM - coeff * x ^ power
 
@@ -62,16 +64,16 @@ public class Main extends Application {
 			coefficient_of_x = sign * prevTerm;
 		term[term_count] = calc_term();
 
-		series.getData().clear();
-		linechart.getData().clear();
+		series.get(curveNo).getData().clear();
+		linechart.getData().removeAll(series.get(curveNo));
 		for(m=0,x=x_min ;m< no_of_points; m++,x+=x_increment)
 		{
 			y[m] = 0;
 			for(n=0;n<=term_count;n++)
 				y[m] += term[n][m];
-			series.getData().add(new XYChart.Data(x,y[m]));
+			series.get(curveNo).getData().add(new XYChart.Data(x,y[m]));
 		}
-		linechart.getData().add(series);
+		linechart.getData().add(series.get(curveNo));
 		linechart.setAnimated(false);
 		linechart.setCreateSymbols(false);            //disables the points	
 	}
@@ -91,6 +93,7 @@ public class Main extends Application {
 		Button minus = new Button("-");
 		Button decimal= new Button(".");
 		Button power = new Button("^");
+		Button newCurve = new Button("add curve");
 		Button[] button = new Button[10];			// button array
 		Button reset = new Button("Reset");
 		
@@ -115,10 +118,12 @@ public class Main extends Application {
 		yAxis.setLabel("y");
 		linechart.setCreateSymbols(false);
 
+		series.add(new XYChart.Series());
+
 		// layout of all elements on page
 		VBox input = new VBox(5);
 		input.setPadding(new Insets(10, 10, 10, 10));
-		input.getChildren().addAll(variable_txt,x_btn,operator_txt,operatorGrid,number_txt,numberGrid,reset);   
+		input.getChildren().addAll(variable_txt,x_btn,operator_txt,operatorGrid,number_txt,numberGrid,reset,newCurve);   
 
 		VBox output = new VBox(5);
 		output.setPadding(new Insets(10, 10, 10, 10));
@@ -144,6 +149,7 @@ public class Main extends Application {
 				sign = 1;
 				
 				string_eqn+=" x";
+				series.get(curveNo).setName(string_eqn);
 				equation.setText(string_eqn);	
 			}
 		}));
@@ -154,6 +160,7 @@ public class Main extends Application {
 					termEnd_reset();
 				sign = 1;
 				string_eqn+=" +";
+				series.get(curveNo).setName(string_eqn);
 				equation.setText(string_eqn);		
 			}
 		}));
@@ -164,6 +171,7 @@ public class Main extends Application {
 					termEnd_reset();
 				sign = -1;
 				string_eqn+=" -";
+				series.get(curveNo).setName(string_eqn);
 				equation.setText(string_eqn);
 			}
 		}));
@@ -173,6 +181,7 @@ public class Main extends Application {
 				decimal_point = 1;
 				decimal_part = 0;
 				string_eqn+=".";
+				series.get(curveNo).setName(string_eqn);
 				equation.setText(string_eqn);
 			}
 		}));
@@ -181,6 +190,7 @@ public class Main extends Application {
 			public void handle(MouseEvent event) {
 				raised = 1;
 				string_eqn+="^";
+				series.get(curveNo).setName(string_eqn);
 				equation.setText(string_eqn);
 			}
 		}));
@@ -199,6 +209,7 @@ public class Main extends Application {
 							
 							draw();
 							string_eqn+=buttonI.getText();
+							series.get(curveNo).setName(string_eqn);
 							equation.setText(string_eqn);
 				}
 			}));	
@@ -210,12 +221,25 @@ public class Main extends Application {
 				sign = 1;
 				term_count = 0;
 				string_eqn = "y = ";
+				series.get(curveNo).setName(string_eqn);
 				equation.setText(string_eqn);
-				series.getData().clear();
+				for(i=0;i<=curveNo;i++)
+					series.get(i).getData().clear();
 				linechart.getData().clear();
-				linechart.getData().add(series);
 				linechart.setAnimated(false);
+			}
+		}));
 
+		newCurve.setOnMouseClicked((new EventHandler<MouseEvent>() { 
+			public void handle(MouseEvent event) {
+				termEnd_reset();
+				sign = 1;
+				term_count = 0;
+				series.add(new XYChart.Series());
+				curveNo++;
+				string_eqn = "y = ";
+				series.get(curveNo).setName(string_eqn);
+				equation.setText(string_eqn);
 			}
 		}));
 
