@@ -54,6 +54,17 @@ public class Main extends Application {
 		raised = 0;
 	}
 
+	public void eqn_reset()
+	{
+		for(m=0,x=x_min ;m< no_of_points; m++,x+=x_increment)
+		{
+			y[m] = 0;
+			for(n=0;n<=term_count;n++)
+				term[n][m] = 0;
+		}
+		term_count = 0;
+	}
+
 	public void draw()
 	{
 		if(raised==1 && prevTerm==0)
@@ -218,8 +229,9 @@ public class Main extends Application {
 		reset.setOnMouseClicked((new EventHandler<MouseEvent>() { 
 			public void handle(MouseEvent event) {			
 				termEnd_reset();
+				raised = 0;
 				sign = 1;
-				term_count = 0;
+				eqn_reset();
 				string_eqn = "y = ";
 				series.get(curveNo).setName(string_eqn);
 				equation.setText(string_eqn);
@@ -233,8 +245,9 @@ public class Main extends Application {
 		newCurve.setOnMouseClicked((new EventHandler<MouseEvent>() { 
 			public void handle(MouseEvent event) {
 				termEnd_reset();
+				raised = 0;
 				sign = 1;
-				term_count = 0;
+				eqn_reset();
 				series.add(new XYChart.Series());
 				curveNo++;
 				string_eqn = "y = ";
