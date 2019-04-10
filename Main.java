@@ -1,3 +1,5 @@
+import eval.Eval;
+
 import java.util.*;
 import javafx.application.Application; 
 import javafx.collections.*;
@@ -126,7 +128,16 @@ public class Main extends Application {
 		
 		// graph set-up
 		xAxis.setLabel("x");
+		xAxis.setTickUnit(2);
+		xAxis.setAutoRanging(true);
+		
 		yAxis.setLabel("y");
+		
+		
+		yAxis.setTickLabelRotation(0);
+		yAxis.setTickUnit(2);
+		
+		
 		linechart.setCreateSymbols(false);
 
 		series.add(new XYChart.Series());
